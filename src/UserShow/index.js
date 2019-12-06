@@ -1,21 +1,77 @@
 import React from 'react'
 import { Header, Icon, Label, List, Grid, Segment } from 'semantic-ui-react'
 
+import UserModal from '../UserModal'
+
 export default class UserShow extends React.Component{
 	constructor(props){
 		super()
+		this.state =({
+			user: {
+				email: '',
+				password: '', // is this a bad idea? for User Update
+				username: ''
+				},
+			userModalOpen: false // modal open/close here
+			})
 	}
 
 	componentDidMount(){
-		this.userInfo()
+
 	}
-	// get the user data to populate 
-	userInfo = async (props) => {
-		console.log(this.props,'\n userInfo coming down to UserShow')
+
+	userModalToggle = () => {
+		this.setState({
+			userModalOpen: !this.state.userModalOpen
+		})
+		this.props.getUser()
 	}
+
+	
+
+	updateUser = async (e) => {
+		e.preventDefault()
+		try {
+			const url = process.env.REACT_APP_API_URL + '/api/v1/users/' + this.props.userId
+			const updateResponse = await fetch(url, {
+				method: 'PUT',
+				credentials: 'include',
+				body: JSON.stringify(this.state.user),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+			const updateResponseParsed = await updateResponse.json()
+			console.log(updateResponseParsed,'\n updatedResponseParsed in UserShow to setState with?')
+			this.userModalToggle()
+		} catch(err) {
+			console.error(err)
+		}
+	}
+
+	handleUserChange = (e) => {
+		this.setState({
+			user:{
+				...this.state.user,
+				[e.target.name]: e.target.value
+			}		
+		})
+	}
+
+	handleSubmit = (e) => {
+		e.preventDefault()
+		this.updateUser()
+	}
+// pass props.modalStatus, props.userModalToggle, this.state.user, this.handleUserChange, this.updateUser to UserModal
 	render(){
 		return(
 			<Segment color='grey'>
+				<UserModal 
+					modalStatus={this.state.userModalOpen} 
+					modalToggle={this.userModalToggle} 
+					user={this.state.user} 
+					handleUserChange={this.handleUserChange} 
+					updateUser={this.updateUser} />
 				<Grid>
 					<Grid.Row columns={2}>
 						<Grid.Column >
@@ -24,7 +80,8 @@ export default class UserShow extends React.Component{
 							</Header>
 						</Grid.Column>
 						<Grid.Column text-align="right">       
-							<Icon name='edit' size='large'/>	<Icon name='delete' size='large'/>
+							<Icon name='edit' size='large' onClick={this.userModalToggle}/>	
+							<Icon name='delete' size='large'/>
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>

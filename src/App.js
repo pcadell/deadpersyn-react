@@ -37,7 +37,6 @@ class App extends React.Component {
         username: parsedLoginResponse.data.username,
         userId: parsedLoginResponse.data.id
       })
-      console.log(parsedLoginResponse.data.username, '\n this is parsedLoginResponse email in app.js')
     } else {
       console.log('Log In Failed')
       console.log(parsedLoginResponse)

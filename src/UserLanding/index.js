@@ -11,14 +11,40 @@ import UserShow from '../UserShow'
 
 export default class UserLanding extends React.Component {
 	constructor(props){
-		super()
+		super(props)
 
 		this.state = {
-			user: {
+			username: '',
+			userId: '',
+			email: '',
+		}
+
+	}
+
+	componentDidMount(){
+		this.getUser()
+		/*this.setState({
 				username: this.props.username, // at least this to populate the username field above logout button
 				email: this.props.email,
 				userId: this.props.userId
-			}
+			})*/
+	}
+
+	getUser = async() => {
+		try {
+			const userGot = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/' + this.props.userId,
+				{
+					method: 'GET', credentials: 'include'
+				});
+			const parsedUser = await userGot.json();
+			this.setState({
+				username: parsedUser.data.username,
+				email: parsedUser.data.email,
+				userId: parsedUser.data.id
+			})
+			console.log(parsedUser, '\n this is parsed user at getUser in UserLanding')
+		} catch(err) {
+			console.error(err)
 		}
 
 	}
@@ -32,17 +58,18 @@ export default class UserLanding extends React.Component {
 						textAlign='center'
 						verticalAlign='top'
 					>
-					<Header as='h1'>{ this.props.username}</Header>
+					<Header as='h1'>{ this.state.username }</Header>
+					
 					</Grid.Row>
 					<Grid.Row
 						stackable="true"
 					>
-						<Button onClick={()=>this.props.logOut()}>Log Out</Button>
+						<Button onClick={()=>this.props.logout()}>Log Out</Button>
 					</Grid.Row>
 				</Grid>
 				<Grid columns={3}>
 					<Grid.Column width={6} textAlign='left'>
-						<UserShow email={this.props.email} username={this.props.username}/>
+						<UserShow email={this.state.email} username={this.state.username} getUser={this.getUser} userId={this.state.userId}/>
 						Contacts List placeholder
 					</Grid.Column>
 					<Grid.Column width={3}>
