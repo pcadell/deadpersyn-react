@@ -86,7 +86,7 @@ class App extends React.Component {
       {
         this.state.loggedIn
             ?    
-        <UserLanding logout={this.logout} email={this.state.loggedInUserEmail} username={this.state.username} userId={this.state.userId}/>
+        <UserLanding logOut={this.logOut} email={this.state.loggedInUserEmail} username={this.state.username} userId={this.state.userId}/>
             :
         <LoginRegistrationForm login={this.login} register={this.register} />
         }

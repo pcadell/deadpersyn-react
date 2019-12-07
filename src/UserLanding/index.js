@@ -1,6 +1,7 @@
 import React from 'react'
 import { Grid, Button, Header, Segment } from 'semantic-ui-react'
-import UserShow from '../UserShow'
+import UserContainer from '../UserContainer'
+import AlarmContainer from '../AlarmContainer'
 
 // row at top with username
 // next row with the logout button under
@@ -64,18 +65,19 @@ export default class UserLanding extends React.Component {
 					<Grid.Row
 						stackable="true"
 					>
-						<Button onClick={()=>this.props.logout()}>Log Out</Button>
+						<Button onClick={()=>this.props.logOut()}>Log Out</Button>
 					</Grid.Row>
 				</Grid>
 				<Grid columns={3}>
 					<Grid.Column width={6} textAlign='left'>
-						<UserShow email={this.state.email} username={this.state.username} getUser={this.getUser} userId={this.state.userId}/>
+						<UserContainer email={this.state.email} username={this.state.username} getUser={this.getUser} userId={this.state.userId}/>
 						Contacts List placeholder
 					</Grid.Column>
 					<Grid.Column width={3}>
 
 					</Grid.Column>
 					<Grid.Column width={6} color='orange'>
+						<AlarmContainer />
 						This is where Alarm setup followed by Set-Alarms cascades
 					</Grid.Column>
 				</Grid>

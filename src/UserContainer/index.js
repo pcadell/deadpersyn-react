@@ -3,7 +3,7 @@ import { Header, Icon, Label, List, Grid, Segment } from 'semantic-ui-react'
 
 import UserModal from '../UserModal'
 
-export default class UserShow extends React.Component{
+export default class UserContainer extends React.Component{
 	constructor(props){
 		super()
 		this.state =({
@@ -27,7 +27,10 @@ export default class UserShow extends React.Component{
 		this.props.getUser()
 	}
 
-	
+/*	deleteUser = () => {
+		this should be triggered from within a popup, so that the user has to be serious about deleting user.
+		this should also delete all of the users alarms and related contacts, maybe works with cascading from on-delete status in the models for foreignkeys? Fingers crossed
+	}*/	
 
 	updateUser = async (e) => {
 		e.preventDefault()
@@ -81,7 +84,7 @@ export default class UserShow extends React.Component{
 						</Grid.Column>
 						<Grid.Column text-align="right">       
 							<Icon name='edit' size='large' onClick={this.userModalToggle}/>	
-							<Icon name='delete' size='large'/>
+							<Icon name='delete' size='large' />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
