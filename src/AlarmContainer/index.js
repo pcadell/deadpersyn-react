@@ -1,9 +1,10 @@
 import React from 'react'
 import { Header, Segment, Icon } from 'semantic-ui-react'
+import AlarmModal from '../AlarmModal'
 
 export default class AlarmContainer extends React.Component {
-	constructor(){
-		super()
+	constructor(props){
+		super(props)
 
 		this.state = {
 			alarmModalOpen: false,
@@ -12,17 +13,21 @@ export default class AlarmContainer extends React.Component {
 				content: '',
 			},
 			alarmId: null,
-			alarms: []
+			alarms: [],
+			recipientsToBe: [],
+			formContacts: []
 		}
 	}
 
-	componentDidMount(){
+	componentDidMount(props){
 		// write a 'get alarms' listing logic to populate this side with existing alarms for this user
 		this.getAlarms()
+		this.formatContacts() // so's i can get the dropdown in the modal to allow picking contacts
 	}
 
 	getAlarms = async () => {
 		try {
+
 			const alarms = await fetch(process.env.REACT_APP_API_URL + '/api/v1/alarms/', {
 				method: 'GET',
 				credentials: 'include'
@@ -31,7 +36,6 @@ export default class AlarmContainer extends React.Component {
 			this.setState({
 				alarms: parsedAlarms.data
 			})
-			console.log(this.state.alarms, '\n here are the alarms in state at AlarmContainer')
 		} catch(err) {
 			console.error(err)
 		}
@@ -62,29 +66,69 @@ export default class AlarmContainer extends React.Component {
 
 	// deleteAlarm(){} removes alarm info and recipient connection. 
 
-	userModalToggle = () => {
+	formatContacts = () => {
+		const formcontacts = this.props.contacts.map(contact => {
+			return (
+				{key: contact.id, value: contact.id, text: contact.nickname}
+				)
+		})
+		this.setState({
+			formContacts: formcontacts
+		})
+	}
+
+	modalToggle = () => {
 		this.setState({
 			alarmModalOpen: !this.state.alarmModalOpen
 		})
 	}
 
-	handleUserChange = (e) => {
+	handleAlarmChange = (e) => {
+// can this be used to set separate states based on separate inputs? if so, handleContactChange below may not be necessary to the logic of this.
+
 		this.setState({
-			user:{
-				...this.state.alarm,
+			alarm:{
 				[e.target.name]: e.target.value
 			}		
 		})
 	}
 
+	handleContactChange = (e, data) => {
+		this.setState({
+			recipientsToBe: [
+				data.value
+			]
+		})
+
+	}
+
+	/*handleContactRemove = (e) => {
+		this.setState({})
+	}
+*/
 	handleSubmit = (e) => {
 		e.preventDefault()
-		this.updateUser()
+		console.log(e.target.value, '\n this is the event value from the AlarmModal via AlarmContainer')
+		this.modalToggle()
+		// this is where the logic gets run to create an alarm and affiliate it with recipients
 	}
+
 	render(){
 		return(
 			<Segment basic>
-				<Icon name='hourglass start' size='huge' onClick={this.userModalToggle}/><br/>
+				<Icon 
+					name='hourglass start' 
+					size='huge' 
+					onClick={this.modalToggle}
+					/><br/>
+				<AlarmModal 
+					modalStatus={this.state.alarmModalOpen}
+					modalToggle={this.modalToggle} 
+					handleAlarmChange={this.handleAlarmChange}
+					handleSubmit={this.handleSubmit}
+					handleContactChange={this.handleContactChange}
+					contacts={this.state.formContacts}
+					/>
 				Add Alarm button with dimmer logic
 				Modal logic lives here
 				List of alarms cascades below

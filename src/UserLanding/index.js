@@ -18,12 +18,15 @@ export default class UserLanding extends React.Component {
 			username: '',
 			userId: '',
 			email: '',
+			contacts: [],
+			hasMounted: false
 		}
 
 	}
 
 	componentDidMount(){
 		this.getUser()
+		this.getContacts()
 		/*this.setState({
 				username: this.props.username, // at least this to populate the username field above logout button
 				email: this.props.email,
@@ -43,11 +46,25 @@ export default class UserLanding extends React.Component {
 				email: parsedUser.data.email,
 				userId: parsedUser.data.id
 			})
-			console.log(parsedUser, '\n this is parsed user at getUser in UserLanding')
 		} catch(err) {
 			console.error(err)
 		}
+	}
 
+	getContacts = async () => {
+		try {
+			const contacts = await fetch(process.env.REACT_APP_API_URL + '/api/v1/contacts/', {
+				method: 'GET',
+				credentials: 'include'
+			})
+			const parsedContacts = await contacts.json()
+			this.setState({
+				contacts: parsedContacts.data
+			})
+			this.setState({hasMounted: !this.state.hasMounted})
+		} catch(err) {
+			console.error(err)
+		}
 	}
 
 	render(props){
@@ -70,15 +87,25 @@ export default class UserLanding extends React.Component {
 				</Grid>
 				<Grid columns={3}>
 					<Grid.Column width={6} textAlign='left'>
-						<UserContainer email={this.state.email} username={this.state.username} getUser={this.getUser} userId={this.state.userId}/>
-						Contacts List placeholder
+						<UserContainer 
+							email={this.state.email} 
+							username={this.state.username} 
+							getUser={this.getUser} 
+							userId={this.state.userId}
+							/>
+						Contacts List placeholder to get passed this.state.contacts?
 					</Grid.Column>
 					<Grid.Column width={3}>
 
 					</Grid.Column>
 					<Grid.Column width={6} color='orange'>
-						<AlarmContainer />
-						This is where Alarm setup followed by Set-Alarms cascades
+					{
+						this.state.hasMounted
+						?
+						<AlarmContainer contacts={this.state.contacts}/>
+						:
+						null
+					}
 					</Grid.Column>
 				</Grid>
 			</Segment>

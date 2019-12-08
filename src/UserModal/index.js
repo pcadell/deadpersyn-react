@@ -2,7 +2,7 @@ import React from 'react'
 import { Segment, Modal, Header, Label, Form, Button } from 'semantic-ui-react'
 
 export default function UserModal(props){
-
+// stretch, have logic forcing re-entry of new password, checking match between
 	return (
 		<Modal open={props.modalStatus} onClose={props.modalToggle}>
 			<Header>Edit User</Header>
@@ -12,6 +12,7 @@ export default function UserModal(props){
 					label='Username:'
 					type='text'
 					name='username'
+					placeholder={props.user.username}
 					value={props.user.username}
 					onChange={props.handleUserChange}
 					/>
@@ -19,6 +20,7 @@ export default function UserModal(props){
 					label='Email:'
 					type='email'
 					name='email'
+					placeholder={props.user.email}
 					value={props.user.email}
 					onChange={props.handleUserChange}
 					/>
