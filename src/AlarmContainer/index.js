@@ -1,6 +1,7 @@
 import React from 'react'
 import { Header, Segment, Icon } from 'semantic-ui-react'
 import AlarmModal from '../AlarmModal'
+import AlarmList from '../AlarmList'
 
 export default class AlarmContainer extends React.Component {
 	constructor(props){
@@ -14,7 +15,6 @@ export default class AlarmContainer extends React.Component {
 			alarms: [],
 			recipientsToBe: [],
 			formContacts: [],
-			date: new Date(),
 			hasMounted: false
 		}
 	}
@@ -42,8 +42,7 @@ export default class AlarmContainer extends React.Component {
 		}
 	}
 
-	createAlarm = async (e, alarmFromModal) => {
-		e.preventDefault();
+	createAlarm = async (alarmFromModal) => {
 		try {
 			const createdAlarmResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/alarms/', {
 				method: 'POST',
@@ -83,10 +82,17 @@ export default class AlarmContainer extends React.Component {
 			alarmModalOpen: !this.state.alarmModalOpen
 		})
 	}
-
 	handleAlarmChange = (e) => {
 		this.setState({
 			content: e.target.value
+		})
+	}
+// setting content into state at change can likely be levelled down to share logic with the 
+// function for datetime, but for now this is easier
+	
+	handleDateTimeChange = (time) => {
+		this.setState({
+				time: time
 		})
 	}
 
@@ -98,16 +104,11 @@ export default class AlarmContainer extends React.Component {
 		})
 	}
 // maybe set the maxDate here, run it from componentDidMount and just tell it 364d 23h 59m 59s + Date.now()?
-	handleDateTimeChange = (date) => {
-		this.setState({
-				date: date
-		})
-	}
 
 	handleSubmit = (e) => {
 		e.preventDefault()
-		console.log(this.state.content, '\n this is state.content in AlarmContainer')
-		console.log(this.state.date, '\n this is state.date in AlarmContainer')
+//		const pyHappyDateTime = this.state.time.toISOString()
+		this.createAlarm({content: this.state.content, time: this.state.time})
 		this.modalToggle()
 		// this is where the logic gets run to create an alarm and affiliate it with recipients
 	}
@@ -123,20 +124,25 @@ export default class AlarmContainer extends React.Component {
 				{
 					this.state.hasMounted
 					?
-				<AlarmModal 
-					modalStatus={this.state.alarmModalOpen}
-					modalToggle={this.modalToggle} 
-					handleAlarmChange={this.handleAlarmChange}
-					handleSubmit={this.handleSubmit}
-					handleContactChange={this.handleContactChange}
-					contacts={this.state.formContacts}
-					time={this.state.time}
-					handleDateTimeChange={this.handleDateTimeChange}
-					/>
+				<div>
+					<AlarmModal 
+						modalStatus={this.state.alarmModalOpen}
+						modalToggle={this.modalToggle} 
+						handleAlarmChange={this.handleAlarmChange}
+						handleSubmit={this.handleSubmit}
+						handleContactChange={this.handleContactChange}
+						contacts={this.state.formContacts}
+						time={this.state.time}
+						handleDateTimeChange={this.handleDateTimeChange}
+						/>
+					<AlarmList
+						alarms={this.state.alarms} 
+						/>
+				</div>
 					:
 					null
 				}
-				List of alarms cascades below
+
 			</Segment>
 		)
 	}
