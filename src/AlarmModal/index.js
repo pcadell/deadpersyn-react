@@ -1,5 +1,8 @@
 import React from 'react'
 import { Segment, Modal, Header, Label, Form, Button, Dropdown } from 'semantic-ui-react'
+import DateTimeComponent from '../DateTimeComponent'
+//import TestComponent from '../TestComponent'
+
 
 export default function AlarmModal(props){
 // Form must take in a message (content), a time (via the react picker)
@@ -16,6 +19,13 @@ export default function AlarmModal(props){
 					name='content'
 					onChange={props.handleAlarmChange}
 					/>
+				<br/>
+				<DateTimeComponent 
+					time={props.time}
+					handleDateTimeChange={props.handleDateTimeChange}
+				/>
+				<br/>
+				<br/>
 				<Dropdown
 					fluid
 					multiple

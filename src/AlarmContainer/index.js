@@ -8,14 +8,14 @@ export default class AlarmContainer extends React.Component {
 
 		this.state = {
 			alarmModalOpen: false,
-			alarm: {
-				time: null,
-				content: '',
-			},
+			time: new Date(),
+			content: '',
 			alarmId: null,
 			alarms: [],
 			recipientsToBe: [],
-			formContacts: []
+			formContacts: [],
+			date: new Date(),
+			hasMounted: false
 		}
 	}
 
@@ -36,6 +36,7 @@ export default class AlarmContainer extends React.Component {
 			this.setState({
 				alarms: parsedAlarms.data
 			})
+			this.setState({hasMounted: !this.state.hasMounted})
 		} catch(err) {
 			console.error(err)
 		}
@@ -84,12 +85,8 @@ export default class AlarmContainer extends React.Component {
 	}
 
 	handleAlarmChange = (e) => {
-// can this be used to set separate states based on separate inputs? if so, handleContactChange below may not be necessary to the logic of this.
-
 		this.setState({
-			alarm:{
-				[e.target.name]: e.target.value
-			}		
+			content: e.target.value
 		})
 	}
 
@@ -99,16 +96,18 @@ export default class AlarmContainer extends React.Component {
 				data.value
 			]
 		})
-
+	}
+// maybe set the maxDate here, run it from componentDidMount and just tell it 364d 23h 59m 59s + Date.now()?
+	handleDateTimeChange = (date) => {
+		this.setState({
+				date: date
+		})
 	}
 
-	/*handleContactRemove = (e) => {
-		this.setState({})
-	}
-*/
 	handleSubmit = (e) => {
 		e.preventDefault()
-		console.log(e.target.value, '\n this is the event value from the AlarmModal via AlarmContainer')
+		console.log(this.state.content, '\n this is state.content in AlarmContainer')
+		console.log(this.state.date, '\n this is state.date in AlarmContainer')
 		this.modalToggle()
 		// this is where the logic gets run to create an alarm and affiliate it with recipients
 	}
@@ -121,6 +120,9 @@ export default class AlarmContainer extends React.Component {
 					size='huge' 
 					onClick={this.modalToggle}
 					/><br/>
+				{
+					this.state.hasMounted
+					?
 				<AlarmModal 
 					modalStatus={this.state.alarmModalOpen}
 					modalToggle={this.modalToggle} 
@@ -128,9 +130,12 @@ export default class AlarmContainer extends React.Component {
 					handleSubmit={this.handleSubmit}
 					handleContactChange={this.handleContactChange}
 					contacts={this.state.formContacts}
+					time={this.state.time}
+					handleDateTimeChange={this.handleDateTimeChange}
 					/>
-				Add Alarm button with dimmer logic
-				Modal logic lives here
+					:
+					null
+				}
 				List of alarms cascades below
 			</Segment>
 		)
