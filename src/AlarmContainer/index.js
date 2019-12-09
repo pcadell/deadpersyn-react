@@ -9,7 +9,7 @@ export default class AlarmContainer extends React.Component {
 
 		this.state = {
 			alarmModalOpen: false,
-			time: new Date(),
+			time: new Date(Date.now()),
 			content: '',
 			alarmId: null,
 			alarms: [],
@@ -54,9 +54,30 @@ export default class AlarmContainer extends React.Component {
 			})
 			const parsedResponse = await createdAlarmResponse.json();
 			console.log(parsedResponse, 'This is the response to createAlarm in AlarmContainer');
+			console.log(this.state.recipientsToBe, '\n state.recipientsToBe assigned by createAlarm dropdown')
 			this.setState({
 				alarms: [...this.state.alarms, parsedResponse.data]
 			})
+			this.createRecipient(parsedResponse.data.id)
+		} catch(err) {
+			console.error(err)
+		}
+	}
+
+	createRecipient = async (idOfCreatedAlarm) => {
+		try {
+			
+			const createRecipient = await fetch(process.env.REACT_APP_API_URL + '/api/v1/recipients/', {
+				method: 'POST',
+				credentials: 'include',
+				body: JSON.stringify({alarm: idOfCreatedAlarm, recipients:this.state.recipientsToBe}),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+				})
+			const parsedResponse = await createRecipient.json()
+			console.log(parsedResponse, '\n parsedResponses from create recipient in AlarmContainer')
+
 		} catch(err) {
 			console.error(err)
 		}
@@ -82,13 +103,12 @@ export default class AlarmContainer extends React.Component {
 			alarmModalOpen: !this.state.alarmModalOpen
 		})
 	}
+
 	handleAlarmChange = (e) => {
 		this.setState({
 			content: e.target.value
 		})
 	}
-// setting content into state at change can likely be levelled down to share logic with the 
-// function for datetime, but for now this is easier
 	
 	handleDateTimeChange = (time) => {
 		this.setState({
@@ -97,17 +117,16 @@ export default class AlarmContainer extends React.Component {
 	}
 
 	handleContactChange = (e, data) => {
+		console.log(data)
 		this.setState({
-			recipientsToBe: [
-				data.value
-			]
+			recipientsToBe: data.value
 		})
 	}
 // maybe set the maxDate here, run it from componentDidMount and just tell it 364d 23h 59m 59s + Date.now()?
 
 	handleSubmit = (e) => {
 		e.preventDefault()
-//		const pyHappyDateTime = this.state.time.toISOString()
+
 		this.createAlarm({content: this.state.content, time: this.state.time})
 		this.modalToggle()
 		// this is where the logic gets run to create an alarm and affiliate it with recipients
