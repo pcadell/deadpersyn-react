@@ -1,10 +1,33 @@
 import React from 'react'
-import { Modal } from 'semantic-ui-react'
+import { Modal, Header, Label, Form, Button } from 'semantic-ui-react'
 
 export default function ContactModal (props) {
 	return(
 		<Modal open={props.modalStatus} onClose={props.modalToggle}>
-			Contact Modal
+			<Header>New Contact</Header>
+			<Modal.Content>
+				<Form onSubmit={props.handleSubmit}>
+				<Form.Input
+					label='Nickname:'
+					type='text'
+					name='nickname'
+					onChange={props.handleChange}
+					/>
+				<Form.Input
+					label='Email:'
+					type='email'
+					name='email'
+					onChange={props.handleChange}
+					/>
+
+				<br/>
+				<Modal.Actions>
+					<Button color='red' type="submit"> Create Contact </Button>
+					<Button color='yellow' onClick={props.modalToggle}>Close Modal</Button>
+				</Modal.Actions>
+				</Form>
+
+			</Modal.Content>
 		</Modal>
 		)
 }

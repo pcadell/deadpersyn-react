@@ -68,6 +68,10 @@ export default class UserLanding extends React.Component {
 		}
 	}
 
+	toggleMounted = () => {
+		this.setState({hasMounted: !this.state.hasMounted})
+	}
+
 	render(props){
 		return(
 			<Segment>
@@ -101,6 +105,7 @@ export default class UserLanding extends React.Component {
 							contacts={this.state.contacts}
 							getContacts={this.getContacts}
 							userId={this.state.userId}
+							toggleMounted={this.toggleMounted}
 							/>
 							:
 							null

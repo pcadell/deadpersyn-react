@@ -8,7 +8,11 @@ export default class ContactList extends React.Component{
 
 		this.state = {
 			modalStatus: false,
-			currentContactID: null
+			currentContactID: null,
+			contact: {
+				nickname: '',
+				email: ''
+			}
 		}
 	}
 
@@ -16,14 +20,13 @@ export default class ContactList extends React.Component{
 
 	}
 
-	createContact = async (e, formData) => {
-		e.preventDefault()
+	createContact = async () => {
 		try {
-			console.log(formData)
-/*			const createContactResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/contacts/', {
+
+			const createContactResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/contacts/', {
 				method: 'POST',
 				credentials: 'include',
-				body: JSON.stringify(formData.),
+				body: JSON.stringify(this.state.contact),
 				headers: {
 					'Content-Type': 'application/json' 
 				}
@@ -31,10 +34,12 @@ export default class ContactList extends React.Component{
 			const parsedResponse = await createContactResponse.json();
 			console.log(parsedResponse, '\n is the created contact from the db')
 			this.props.getContacts()
+			this.props.toggleMounted()
 			this.setState({
-				currentContactID: null
+				currentContactID: parsedResponse.data.id
 			})
-*/
+			console.log(this.state.currentContactID, '\n should be the id of the created contact')
+
 		} catch(err) {
 			console.error(err)
 		}
@@ -45,7 +50,20 @@ export default class ContactList extends React.Component{
 			modalStatus: !this.state.modalStatus
 		})
 	}
-// onChange and onSubmit for contacts
+
+	handleChange = (e) => {
+		this.setState({
+			contact: { ...this.state.contact,
+				[e.target.name]: e.target.value
+			}
+		})
+	}
+
+	handleSubmit = (e) => {
+		e.preventDefault()
+		this.createContact()
+	}
+
 // include a ternary based on this.state.currentContactID to tell whether modal will be edit or create modal 
 
 	render(props){
@@ -67,6 +85,8 @@ export default class ContactList extends React.Component{
 					{contacts}
 				</Item.Group>
 				<ContactModal 
+					handleSubmit={this.handleSubmit}
+					handleChange={this.handleChange}
 					modalStatus={this.state.modalStatus}
 					modalToggle={this.modalToggle}
 				/>
