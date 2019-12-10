@@ -5,9 +5,6 @@ import DateTimeComponent from '../DateTimeComponent'
 
 
 export default function AlarmModal(props){
-// Form must take in a message (content), a time (via the react picker)
-// figuring out logic of passing selected contacts to form recpipient relationships onSubmit
-// then we'll work out the logic for the datetimepicker before plugging it into the backend
 	return (
 		<Modal open={props.modalStatus} onClose={props.modalToggle}>
 			<Header>New Alarm</Header>

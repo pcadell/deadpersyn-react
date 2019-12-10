@@ -45,6 +45,25 @@ export default class ContactList extends React.Component{
 		}
 	}
 
+	updateContact = async () => {
+		try {
+			const updateContactResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/contacts/' + this.state.currentContactID, {
+				method: 'PUT',
+				credentials: 'include',
+				body: JSON.stringify(this.state.contact),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+			const parsedResponse = await updateContactResponse.json()
+			console.log(parsedResponse, '\n is the updated contact from the db')
+			this.props.getContacts()
+			this.props.toggleMounted()
+		} catch(err) {
+			console.error(err)
+		}
+	}
+
 	deleteContact = async (id) => {
 		try {
 			const contactToDelete = await fetch(process.env.REACT_APP_API_URL + '/api/v1/contacts/' + id, {
@@ -55,6 +74,7 @@ export default class ContactList extends React.Component{
 			console.log(parsedResponse)
 			this.props.getContacts()
 			this.props.toggleMounted()
+			this.setState({currentContactID: null})
 		} catch(err) {
 			console.error(err)
 		}
@@ -74,9 +94,22 @@ export default class ContactList extends React.Component{
 		})
 	}
 
+	editModal = (contactID) => {
+
+		this.setState({
+			currentContactID: contactID
+		})
+		this.modalToggle()
+
+	}
+
 	handleSubmit = (e) => {
 		e.preventDefault()
-		this.createContact()
+		if (this.state.currentContactID){
+				this.updateContact()
+			} else {
+				this.createContact()
+			}
 	}
 
 	render(props){
@@ -84,7 +117,7 @@ export default class ContactList extends React.Component{
 			return(
 				<Item key={contact.id} color='blue'>
 					<Item.Header>{contact.nickname}</Item.Header>
-					<Icon name='edit' color='red' onClick={this.modalToggle} /><Icon name='delete' color='red' onClick={()=>this.deleteContact(contact.id)}/>
+					<Icon name='edit' color='red' onClick={()=>{this.editModal(contact.id)}} /><Icon name='delete' color='red' onClick={()=>this.deleteContact(contact.id)}/>
 					<br/>
 					<Item.Content>Email: {contact.email}</Item.Content>
 				</Item>
@@ -102,6 +135,7 @@ export default class ContactList extends React.Component{
 					handleChange={this.handleChange}
 					modalStatus={this.state.modalStatus}
 					modalToggle={this.modalToggle}
+					currentContactID={this.state.currentContactID}
 				/>
 			</div>
 			)

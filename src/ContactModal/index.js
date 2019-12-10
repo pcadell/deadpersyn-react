@@ -4,7 +4,13 @@ import { Modal, Header, Label, Form, Button } from 'semantic-ui-react'
 export default function ContactModal (props) {
 	return(
 		<Modal open={props.modalStatus} onClose={props.modalToggle}>
-			<Header>New Contact</Header>
+			{
+				props.currentContactID === null
+				?
+				<Header>New Contact</Header>
+				:
+				<Header>Update Contact</Header>
+			}
 			<Modal.Content>
 				<Form onSubmit={props.handleSubmit}>
 				<Form.Input
@@ -22,7 +28,13 @@ export default function ContactModal (props) {
 
 				<br/>
 				<Modal.Actions>
-					<Button color='red' type="submit"> Create Contact </Button>
+					{
+						props.currentContactID === null
+					?
+						<Button color='red' type="submit"> Create Contact </Button>
+					:
+						<Button color='red' type="submit"> Update Contact </Button>
+					}
 					<Button color='yellow' onClick={props.modalToggle}>Close Modal</Button>
 				</Modal.Actions>
 				</Form>
