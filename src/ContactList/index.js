@@ -35,11 +35,26 @@ export default class ContactList extends React.Component{
 			console.log(parsedResponse, '\n is the created contact from the db')
 			this.props.getContacts()
 			this.props.toggleMounted()
-			this.setState({
+/*			this.setState({
 				currentContactID: parsedResponse.data.id
 			})
 			console.log(this.state.currentContactID, '\n should be the id of the created contact')
+*/
+		} catch(err) {
+			console.error(err)
+		}
+	}
 
+	deleteContact = async (id) => {
+		try {
+			const contactToDelete = await fetch(process.env.REACT_APP_API_URL + '/api/v1/contacts/' + id, {
+				method: 'DELETE',
+				credentials: 'include'
+			})
+			const parsedResponse = await contactToDelete.json()
+			console.log(parsedResponse)
+			this.props.getContacts()
+			this.props.toggleMounted()
 		} catch(err) {
 			console.error(err)
 		}
@@ -64,14 +79,12 @@ export default class ContactList extends React.Component{
 		this.createContact()
 	}
 
-// include a ternary based on this.state.currentContactID to tell whether modal will be edit or create modal 
-
 	render(props){
 		const contacts = this.props.contacts.map(contact => {
 			return(
 				<Item key={contact.id} color='blue'>
 					<Item.Header>{contact.nickname}</Item.Header>
-					<Icon name='edit' color='red' onClick={this.modalToggle} /><Icon name='delete' color='red'/>
+					<Icon name='edit' color='red' onClick={this.modalToggle} /><Icon name='delete' color='red' onClick={()=>this.deleteContact(contact.id)}/>
 					<br/>
 					<Item.Content>Email: {contact.email}</Item.Content>
 				</Item>
