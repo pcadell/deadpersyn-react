@@ -1,5 +1,5 @@
 import React from 'react'
-import { Segment, Icon, Item } from 'semantic-ui-react'
+import { Icon, Item } from 'semantic-ui-react'
 
 
 export default function AlarmList(props){
@@ -7,15 +7,15 @@ export default function AlarmList(props){
 	const alarms = props.alarms.map(alarm => {
 		return(
 			<Item key={alarm.id} color='blue'>
-				<Item.Header><Icon name='hourglass half' color='red'/>{alarm.time}</Item.Header>
-				<Item.Content>Message: {alarm.content}</Item.Content>
+				<Item.Header>{alarm.time}  <Icon name='edit' color='red'/> <Icon name='delete' color='red'/></Item.Header>
+				<Item.Content>Message: {alarm.content}<Icon name='hourglass half' color='red'/></Item.Content>
 			</Item>
 			)
 	})
 
 	return(
-		<div>
+		<Item.Group divided>
 			{alarms}
-		</div>
+		</Item.Group>
 		)
 }

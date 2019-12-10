@@ -9,7 +9,7 @@ export default class AlarmContainer extends React.Component {
 
 		this.state = {
 			alarmModalOpen: false,
-			time: new Date(Date.now()),
+			time: new Date(Date.now()), // - 21600000),
 			content: '',
 			alarmId: null,
 			alarms: [],
@@ -20,9 +20,8 @@ export default class AlarmContainer extends React.Component {
 	}
 
 	componentDidMount(props){
-		// write a 'get alarms' listing logic to populate this side with existing alarms for this user
 		this.getAlarms()
-		this.formatContacts() // so's i can get the dropdown in the modal to allow picking contacts
+		this.formatContacts()
 	}
 
 	getAlarms = async () => {
@@ -53,8 +52,6 @@ export default class AlarmContainer extends React.Component {
 				}
 			})
 			const parsedResponse = await createdAlarmResponse.json();
-			console.log(parsedResponse, 'This is the response to createAlarm in AlarmContainer');
-			console.log(this.state.recipientsToBe, '\n state.recipientsToBe assigned by createAlarm dropdown')
 			this.setState({
 				alarms: [...this.state.alarms, parsedResponse.data]
 			})
@@ -117,7 +114,7 @@ export default class AlarmContainer extends React.Component {
 	}
 
 	handleContactChange = (e, data) => {
-		console.log(data)
+
 		this.setState({
 			recipientsToBe: data.value
 		})

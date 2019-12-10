@@ -2,6 +2,7 @@ import React from 'react'
 import { Grid, Button, Header, Segment } from 'semantic-ui-react'
 import UserContainer from '../UserContainer'
 import AlarmContainer from '../AlarmContainer'
+import ContactList from '../ContactList'
 
 // row at top with username
 // next row with the logout button under
@@ -93,7 +94,18 @@ export default class UserLanding extends React.Component {
 							getUser={this.getUser} 
 							userId={this.state.userId}
 							/>
-						Contacts List placeholder to get passed this.state.contacts?
+						{
+							this.state.hasMounted
+							?
+							<ContactList 
+							contacts={this.state.contacts}
+							getContacts={this.getContacts}
+							userId={this.state.userId}
+							/>
+							:
+							null
+						}
+
 					</Grid.Column>
 					<Grid.Column width={3}>
 
