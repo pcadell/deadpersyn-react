@@ -3,8 +3,10 @@ import DatePicker from "react-datepicker";
 //import Date
 
 import "react-datepicker/dist/react-datepicker.css";
-// 			    maxDate={addDays(new Date(), 365)}
+
 export default function DateTimeComponent(props){
+// 			    maxDate={addDays(new Date(), 365)}
+	console.log(typeof props.time)
 	return(
 		<div>
 			<DatePicker
