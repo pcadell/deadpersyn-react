@@ -119,7 +119,7 @@ export default class UserLanding extends React.Component {
 					{
 						this.state.hasMounted
 						?
-						<AlarmContainer contacts={this.state.contacts}/>
+						<AlarmContainer contacts={this.state.contacts} />
 						:
 						null
 					}

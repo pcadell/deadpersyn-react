@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 export default function DateTimeComponent(props){
 // 			    maxDate={addDays(new Date(), 365)}
-	console.log(typeof props.time)
+
 	return(
 		<div>
 			<DatePicker

@@ -56,7 +56,7 @@ export default class AlarmContainer extends React.Component {
 			this.setState({
 				alarms: [...this.state.alarms, parsedResponse.data]
 			})
-			this.createRecipient(parsedResponse.data.id)
+			this.createRecipients(parsedResponse.data.id)
 /*			this.getAlarms()
 			this.setState({hasMounted: !this.state.hasMounted})
 */		} catch(err) {
@@ -64,10 +64,10 @@ export default class AlarmContainer extends React.Component {
 		}
 	}
 
-	createRecipient = async (idOfCreatedAlarm) => {
+	createRecipients = async (idOfCreatedAlarm) => {
 		try {
 			
-			const createRecipient = await fetch(process.env.REACT_APP_API_URL + '/api/v1/recipients/', {
+			const createRecipients = await fetch(process.env.REACT_APP_API_URL + '/api/v1/recipients/', {
 				method: 'POST',
 				credentials: 'include',
 				body: JSON.stringify({alarm: idOfCreatedAlarm, recipients:this.state.recipientsToBe}),
@@ -75,7 +75,7 @@ export default class AlarmContainer extends React.Component {
 					'Content-Type': 'application/json'
 				}
 				})
-			const parsedResponse = await createRecipient.json()
+			const parsedResponse = await createRecipients.json()
 			console.log(parsedResponse, '\n parsedResponses from create recipient in AlarmContainer')
 
 		} catch(err) {
@@ -108,7 +108,7 @@ export default class AlarmContainer extends React.Component {
 	}
 
 // this alarmFromModal comes via handleChange when it senses that this.currentAlarmID is a value
-	updateAlarm = async (alarmFromModal, currentAlarmID) => {
+	updateAlarm = async (alarmFromModal, currentAlarmID, recipients) => {
 		try {
 			const updateAlarm = await fetch(process.env.REACT_APP_API_URL + '/api/v1/alarms/' + currentAlarmID, {
 			method: 'PUT',
@@ -118,20 +118,56 @@ export default class AlarmContainer extends React.Component {
 				'Content-Type': 'application/json'
 			}
 		})
-
 			const parsedResponse = await updateAlarm.json()
 			console.log(parsedResponse, '\n parsedResponse from updating an alarm')
-
-
-// add logic here to to change recipients if they differ, passing that alarmFromModal?
-// gotta list recpients so they can fit into a dropdown and upon submit the removed ones get sent to backend
-// will require refactoring python to take arrays... ugh
+		this.updateRecipients(currentAlarmID, recipients)
+		
 		} catch(err) {
 			console.error(err)
 		}
-
 	}
-	// updateAlarm(){} if an alarm is set to 'sent' status (toggled to inactive), python-crontab should remove the job from the cron but the alarm continues to exist so it can be reassigned to a new time? If that seems too hard, it can just get deleted.
+
+
+
+	updateRecipients = async (alarmID, newRecipients) => {
+		try {
+			// original recipients from the recently edited alarm 
+			const oldRecipients = this.state.recipientsAlarmEdit.map(recipient => recipient.value)
+			const toDelete = []
+			for (let i = 0; i < oldRecipients.length; i++) {
+				const removeThis = newRecipients.indexOf(oldRecipients[i])
+				if (removeThis === -1) {
+					toDelete.push(oldRecipients[i])
+				}
+			}
+			this.setState({
+				recipientsToBe: newRecipients
+			})
+			this.createRecipients(alarmID)
+
+			this.deleteRecipients(alarmID, { array:toDelete })
+			console.log(toDelete, '\n should be deleted from db')
+		} catch(err) {
+			console.error(err)
+		}
+	}
+
+	deleteRecipients = async (alarmID, recipientsToDelete) => {
+		try {
+			const deleteRecipients = await fetch(process.env.REACT_APP_API_URL + '/api/v1/recipients/' + alarmID, {
+				method: 'DELETE',
+				credentials: 'include',
+				body: JSON.stringify(recipientsToDelete), // can i just pass an array of id's?
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+			const parsedResponse = await deleteRecipients.json()
+			console.log(parsedResponse, '\n parsedResponse from deleting recipients')
+		} catch(err) {
+			console.error(err)
+		}
+	}
 
 	deleteAlarm = async (id) => {
 		try {
@@ -171,7 +207,7 @@ export default class AlarmContainer extends React.Component {
 			})
 			const parsedResponse = await getRecipients.json()
 			if (this.state.currentAlarmID) {
-				const relevantRecipients = parsedResponse.data.filter(response => response.alarm.id === alarmID)
+				const relevantRecipients = parsedResponse.data.filter(response => response.alarm.id === alarmID) // this to update
 				const formattedRecs = relevantRecipients.map(recipient => {
 				return (
 					{key: recipient.contact.id, value: recipient.contact.id, text: recipient.contact.nickname}
@@ -198,7 +234,8 @@ export default class AlarmContainer extends React.Component {
 					this.setState({
 					currentAlarmID: null,
 					content: '',
-					time: new Date(Date.now())
+					time: new Date(Date.now()),
+					recipientsToBe: []
 				})
 		}
 	}
@@ -228,7 +265,7 @@ export default class AlarmContainer extends React.Component {
 		if (!this.state.currentAlarmID){
 				this.createAlarm({content: this.state.content, time: this.state.time})
 			} else {
-				this.updateAlarm({content: this.state.content, time: this.state.time}, this.state.currentAlarmID)
+				this.updateAlarm({content: this.state.content, time: this.state.time}, this.state.currentAlarmID, this.state.recipientsToBe)
 			}
 		this.modalToggle()
 
