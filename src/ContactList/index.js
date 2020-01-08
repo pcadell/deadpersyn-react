@@ -73,8 +73,8 @@ export default class ContactList extends React.Component{
 			const parsedResponse = await contactToDelete.json()
 			console.log(parsedResponse)
 			this.props.getContacts()
-			this.props.toggleMounted()
 			this.setState({currentContactID: null})
+			this.props.toggleMounted()
 		} catch(err) {
 			console.error(err)
 		}

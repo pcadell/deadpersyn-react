@@ -145,9 +145,10 @@ export default class AlarmContainer extends React.Component {
 				recipientsToBe: newRecipients
 			})
 			this.createRecipients(alarmID)
-
-			this.deleteRecipients(alarmID, { array:toDelete })
-			console.log(toDelete, '\n should be deleted from db')
+			if (toDelete.length > 0) {			
+				this.deleteRecipients(alarmID, { array:toDelete })
+				console.log(toDelete, '\n should be deleted from db')
+			}		
 		} catch(err) {
 			console.error(err)
 		}
