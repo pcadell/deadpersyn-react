@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Header, Label, Form, Button, Dropdown } from 'semantic-ui-react'
+import { Modal, Header, Form, Button, Dropdown } from 'semantic-ui-react'
 import DateTimeComponent from '../DateTimeComponent'
 
 export default function AlarmModal(props){

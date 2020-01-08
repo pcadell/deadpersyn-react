@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Segment, Icon } from 'semantic-ui-react'
+import { Segment, Icon } from 'semantic-ui-react'
 import AlarmModal from '../AlarmModal'
 import AlarmList from '../AlarmList'
 
@@ -103,7 +103,7 @@ export default class AlarmContainer extends React.Component {
 			time: thisAlarm[0].time,
 			content: thisAlarm[0].content
 		})
-		console.log(this.state.content, 'content to feeed into edit modal ')
+		console.log(this.state.content, 'content to feed into edit modal ')
 
 	}
 
@@ -121,7 +121,8 @@ export default class AlarmContainer extends React.Component {
 			const parsedResponse = await updateAlarm.json()
 			console.log(parsedResponse, '\n parsedResponse from updating an alarm')
 		this.updateRecipients(currentAlarmID, recipients)
-		
+		this.getAlarms()
+		this.setState({hasMounted: !this.state.hasMounted})
 		} catch(err) {
 			console.error(err)
 		}
@@ -157,7 +158,7 @@ export default class AlarmContainer extends React.Component {
 			const deleteRecipients = await fetch(process.env.REACT_APP_API_URL + '/api/v1/recipients/' + alarmID, {
 				method: 'DELETE',
 				credentials: 'include',
-				body: JSON.stringify(recipientsToDelete), // can i just pass an array of id's?
+				body: JSON.stringify(recipientsToDelete),
 				headers: {
 					'Content-Type': 'application/json'
 				}
@@ -294,7 +295,6 @@ export default class AlarmContainer extends React.Component {
 						time={this.state.time}
 						handleDateTimeChange={this.handleDateTimeChange}
 						currentAlarmID={this.state.currentAlarmID}
-						recipients={this.state.recipientsAlarmEdit}
 						content={this.state.content}
 						/>
 					<AlarmList

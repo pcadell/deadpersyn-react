@@ -4,13 +4,6 @@ import UserContainer from '../UserContainer'
 import AlarmContainer from '../AlarmContainer'
 import ContactList from '../ContactList'
 
-// row at top with username
-// next row with the logout button under
-// row with two columns with a nice margin in the middle
-// column 1: user-info with contacts below
-// column 2: add alarm component with alarm list under
-
-
 export default class UserLanding extends React.Component {
 	constructor(props){
 		super(props)
@@ -22,17 +15,11 @@ export default class UserLanding extends React.Component {
 			contacts: [],
 			hasMounted: false
 		}
-
 	}
 
 	componentDidMount(){
 		this.getUser()
 		this.getContacts()
-		/*this.setState({
-				username: this.props.username, // at least this to populate the username field above logout button
-				email: this.props.email,
-				userId: this.props.userId
-			})*/
 	}
 
 	getUser = async() => {

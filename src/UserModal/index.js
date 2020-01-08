@@ -1,5 +1,5 @@
 import React from 'react'
-import { Segment, Modal, Header, Label, Form, Button } from 'semantic-ui-react'
+import { Modal, Header, Form, Button } from 'semantic-ui-react'
 
 export default function UserModal(props){
 // stretch, have logic forcing re-entry of new password, checking match between
