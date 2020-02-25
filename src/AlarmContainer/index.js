@@ -14,7 +14,7 @@ export default class AlarmContainer extends React.Component {
 			alarms: [],
 			recipientsToBe: [],
 			formContacts: [],
-			hasMounted: false, // maksing sure that this does not load until props has arrived
+			hasMounted: false, // making sure that this does not load until props has arrived
 			currentAlarmID: null,
 			recipientsAlarmEdit: []
 		}

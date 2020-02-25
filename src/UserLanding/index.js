@@ -13,7 +13,8 @@ export default class UserLanding extends React.Component {
 			userId: '',
 			email: '',
 			contacts: [],
-			hasMounted: false
+			hasMounted: false,
+			emailModalOpen: false
 		}
 	}
 
