@@ -16,7 +16,11 @@ export default class UserContainer extends React.Component{
 			})
 	}
 
-	componentDidMount(){
+	componentDidMount(props){
+		this.setState({
+			dp_email: this.props.email,
+			dp_username: this.props.username
+		})
 
 	}
 
@@ -76,24 +80,21 @@ export default class UserContainer extends React.Component{
 					handleUserChange={this.handleUserChange} 
 					updateUser={this.updateUser} />
 				<Grid>
-					<Grid.Row columns={2}>
-						<Grid.Column >
+					<Grid.Row columns={2} padded>
+						<Grid.Column textAlign="left">
 							<Header as='h2' icon>
-								Account 
+								DeadPersyn Account
 							</Header>
 						</Grid.Column>
-						<Grid.Column text-align="right">       
+						<Grid.Column textAlign="right">       
 							<Icon name='edit' size='large' onClick={this.userModalToggle}/>	
 							<Icon name='delete' size='large' />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
 				<List divided selection> 
-					<List.Item key='Show Username'>
-						<Label horizontal>Username: </Label>{this.props.username}
-					</List.Item>
 					<List.Item key='Show Email'>
-						<Label horizontal>Email: </Label>{this.props.email}
+						<Label horizontal>Sending From: </Label>{this.props.mail_username}
 					</List.Item>
 					<List.Item key='Show Password'>
 						<Label horizontal>Password: <Icon name='privacy'/></Label>

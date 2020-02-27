@@ -3,6 +3,7 @@ import { Grid, Button, Header, Segment } from 'semantic-ui-react'
 import UserContainer from '../UserContainer'
 import AlarmContainer from '../AlarmContainer'
 import ContactList from '../ContactList'
+import EmailSetup from '../EmailSetup'
 
 export default class UserLanding extends React.Component {
 	constructor(props){
@@ -14,7 +15,13 @@ export default class UserLanding extends React.Component {
 			email: '',
 			contacts: [],
 			hasMounted: false,
-			emailModalOpen: false
+			emailModalOpen: false,
+			mail_server: '',
+			mail_port: '',
+			mail_use_tls: true,
+			mail_use_ssl: false,
+			mail_username: '',
+			mail_password: ''
 		}
 	}
 
@@ -33,12 +40,20 @@ export default class UserLanding extends React.Component {
 			this.setState({
 				username: parsedUser.data.username,
 				email: parsedUser.data.email,
-				userId: parsedUser.data.id
+				userId: parsedUser.data.id,
+				mail_server: parsedUser.data.mail_server,
+				mail_port: parsedUser.data.mail_port,
+				mail_use_tls: parsedUser.data.mail_use_tls,
+				mail_use_ssl: parsedUser.data.mail_use_ssl,
+				mail_username: parsedUser.data.mail_username
+
 			})
 		} catch(err) {
 			console.error(err)
 		}
 	}
+
+	// deleteAccount coming soon, linked to 'x' icon in UserContainer
 
 	getContacts = async () => {
 		try {
@@ -81,8 +96,9 @@ export default class UserLanding extends React.Component {
 				<Grid columns={3}>
 					<Grid.Column width={6} textAlign='left'>
 						<UserContainer 
-							email={this.state.email} 
-							username={this.state.username} 
+							mail_username={this.state.mail_username} 
+							dp_username={this.state.username} 
+							dp_email={this.state.email}
 							getUser={this.getUser} 
 							userId={this.state.userId}
 							/>

@@ -5,7 +5,7 @@ export default function UserModal(props){
 // stretch, have logic forcing re-entry of new password, checking match between
 	return (
 		<Modal open={props.modalStatus} onClose={props.modalToggle}>
-			<Header>Edit User</Header>
+			<Header>DeadPersyn Login Info</Header>
 			<Modal.Content>
 				<Form onSubmit={props.updateUser}>
 				<Form.Input
