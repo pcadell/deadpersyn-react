@@ -3,7 +3,6 @@ import { Grid, Button, Header, Segment } from 'semantic-ui-react'
 import UserContainer from '../UserContainer'
 import AlarmContainer from '../AlarmContainer'
 import ContactList from '../ContactList'
-import EmailSetup from '../EmailSetup'
 
 export default class UserLanding extends React.Component {
 	constructor(props){
@@ -15,7 +14,6 @@ export default class UserLanding extends React.Component {
 			email: '',
 			contacts: [],
 			hasMounted: false,
-			emailModalOpen: false,
 			mail_server: '',
 			mail_port: '',
 			mail_use_tls: true,
@@ -96,11 +94,15 @@ export default class UserLanding extends React.Component {
 				<Grid columns={3}>
 					<Grid.Column width={6} textAlign='left'>
 						<UserContainer 
-							mail_username={this.state.mail_username} 
-							dp_username={this.state.username} 
-							dp_email={this.state.email}
+							username={this.state.username} 
+							email={this.state.email}
 							getUser={this.getUser} 
 							userId={this.state.userId}
+							mail_username={this.state.mail_username}
+							mail_server={this.state.mail_server}
+							mail_port={this.state.mail_port}
+							mail_use_tls={this.state.mail_use_tls}
+							mail_use_ssl={this.state.mail_use_ssl}
 							/>
 						{
 							this.state.hasMounted

@@ -2,6 +2,8 @@ import React from 'react'
 import { Header, Icon, Label, List, Grid, Segment } from 'semantic-ui-react'
 
 import UserModal from '../UserModal'
+import EmailSetup from '../EmailSetup'
+
 
 export default class UserContainer extends React.Component{
 	constructor(props){
@@ -9,17 +11,30 @@ export default class UserContainer extends React.Component{
 		this.state =({
 			user: {
 				email: '',
-				password: '', // is this a bad idea? for User Update
+				password: '', 
 				username: ''
 				},
-			userModalOpen: false // modal open/close here
+			email: {
+				mail_server: '',
+				mail_port: '',
+				mail_use_tls: true,
+				mail_use_ssl: false,
+				mail_username: ''
+				},
+			userModalOpen: false, // modal open/close here
+			emailModalOpen: false
 			})
 	}
 
 	componentDidMount(props){
 		this.setState({
-			dp_email: this.props.email,
-			dp_username: this.props.username
+			email: this.props.email,
+			username: this.props.username,
+			mail_server: this.props.mail_server,
+			mail_port: this.props.mail_port,
+			mail_use_tls: this.mail_use_tls,
+			mail_use_ssl: this.mail_use_ssl,
+			mail_username: this.mail_username,
 		})
 
 	}
@@ -29,6 +44,12 @@ export default class UserContainer extends React.Component{
 			userModalOpen: !this.state.userModalOpen
 		})
 		this.props.getUser()
+	}
+
+	emailModalToggle = () => {
+		this.setState({
+			emailModalOpen: !this.state.emailModalOpen
+		})
 	}
 
 /*	deleteUser = () => {
@@ -78,9 +99,15 @@ export default class UserContainer extends React.Component{
 					modalToggle={this.userModalToggle} 
 					user={this.state.user} 
 					handleUserChange={this.handleUserChange} 
-					updateUser={this.updateUser} />
+					updateUser={this.updateUser}
+					emailModalOpen={this.state.emailModalOpen} />
+				<EmailSetup
+					modalStatus={this.state.emailModalOpen}
+					modalToggle={this.emailModalToggle}
+
+				/>
 				<Grid>
-					<Grid.Row columns={2} padded>
+					<Grid.Row columns={2} padded='true'>
 						<Grid.Column textAlign="left">
 							<Header as='h2' icon>
 								DeadPersyn Account
@@ -92,14 +119,23 @@ export default class UserContainer extends React.Component{
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-				<List divided selection> 
-					<List.Item key='Show Email'>
-						<Label horizontal>Sending From: </Label>{this.props.mail_username}
-					</List.Item>
-					<List.Item key='Show Password'>
-						<Label horizontal>Password: <Icon name='privacy'/></Label>
-					</List.Item>
-				</List>
+				<Grid>
+					<Grid.Row columns={2} padded='true'>
+						<Grid.Column textAlign="left">
+							<Header as='h2' icon>
+								Email Account
+							</Header>
+						</Grid.Column>
+						<Grid.Column textAlign="right">
+							<Icon name='edit' size='large' onClick={this.emailModalToggle}/>
+						</Grid.Column>
+							<List divided selection> 
+								<List.Item key='Show Email'>
+									<Label horizontal>Sending From: </Label>{this.props.mail_username}
+								</List.Item>
+							</List>
+					</Grid.Row>
+				</Grid>
 			</Segment>
 			)}
 }
